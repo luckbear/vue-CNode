@@ -67,27 +67,42 @@ export default {
     };
   },
   methods: {
-    //更改路由状态
-    renderTopic(tab) {
-      this.tab = tab;
+    //获取topic列表
+    getTopicList(tab, page) {
+      // var tab = this.$route.query.tab || this.tab;
       this.$router.push({ path: "/home", query: { tab } });
-    }
-  },
-  watch: {
-    //监听tab的变化来请求数据
-    tab: function(tab) {
       this.http
         .getList({
           tab: tab,
-          page: this.page,
+          page: page,
           limit: this.limit
         })
         .then(res => {
           console.log(res);
         });
+    },
+    //更改路由状态并请求数据
+    renderTopic(tab) {
+      if (this.tab === tab) {
+        return;
+      }
+      this.tab = tab;
+      this.getTopicList(this.tab, this.page);
     }
   },
-  created() {},
+  watch: {
+    //监听tab的变化来请求数据
+    tab: function(tab) {
+      this;
+    }
+  },
+  created() {
+    if (!this.$route.query.tab) {
+      this.getTopicList("all", 1);
+    } else {
+      this.renderTopic(this.$route.query.tab);
+    }
+  },
 
   components: {
     // Page,
