@@ -9,6 +9,10 @@ import router from './router'
 //引入iview
 import 'iview/dist/styles/iview.css'
 
+//引入ajax请求插件
+import http from './server'
+Vue.use(http)
+
 import App from './App.vue'
 
 var vm = new Vue({

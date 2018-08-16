@@ -29,24 +29,19 @@
 <script>
 import { BackTop } from "iview";
 export default {
-  created() {
-    console.log(this.$route.params.tab);
-  },
-
   methods: {
     //首页跳转
     toHome() {
-      this.$router.push({ path: "/home", query: { tab: "all" } });
+      this.$router.push({ path: "/home"});
     },
     //消息页面跳转
     toMessage() {
       this.$router.push({ path: "/message" });
     },
     //登陆页面跳转
-    toLogin(){
-        
+    toLogin() {
+      this.$router.push({ path: "/login" });
     }
-
   },
   components: {
     BackTop
