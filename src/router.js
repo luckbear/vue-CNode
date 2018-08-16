@@ -10,7 +10,7 @@ import user from './components/user.vue'
 export default new Router({
     routes: [{
             path: '/',
-            redirect: '/home',
+            redirect: '/home?tab=all',
         },
         {
             path: '/home',

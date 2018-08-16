@@ -98,8 +98,9 @@ export default {
   },
   created() {
     if (!this.$route.query.tab) {
-      this.getTopicList("all", 1);
+      this.getTopicList('all', 1);
     } else {
+      this.tab = '';
       this.renderTopic(this.$route.query.tab);
     }
   },
