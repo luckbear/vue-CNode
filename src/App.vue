@@ -11,7 +11,10 @@
                 </ul>
             </div>
         </header>
-        <router-view></router-view>
+        <div class="body-container">
+            <router-view></router-view>
+        </div>
+    
         
         <footer>
             <div class="footer-content">
@@ -32,7 +35,7 @@ export default {
   methods: {
     //首页跳转
     toHome() {
-      this.$router.push({ path: "/home"});
+      this.$router.push({ path: "/home" });
     },
     //消息页面跳转
     toMessage() {
@@ -44,7 +47,7 @@ export default {
     }
   },
   components: {
-    BackTop
+    BackTop,
   }
 };
 </script>

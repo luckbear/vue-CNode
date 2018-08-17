@@ -16,30 +16,10 @@
                         <li><span>全部</span></li> -->
                     </ul>
                 </div>
-                <div class="topic">
-                    <div class="topicInfo">
-                        <img src="https://avatars3.githubusercontent.com/u/2842176?v=4&s=120" alt="">
-                        <span class="replyNum" title="回复数">12</span>/
-                        <span class="viewNum" title="浏览数">100</span>
-                        <span class="category">置顶</span>
-                        <a class="title">Promise.all()  如果有一个错误，不走 catch ？</a>
-                        <span class="time">{{[2007, 0, 29]|dateFormat}}</span>
-                        <img class="lastReply" src="https://avatars1.githubusercontent.com/u/628250?v=4&s=120" alt="">
-                    </div>
-                </div>
-                <div class="topic">
-                    <div class="topicInfo">
-                        <img src="https://avatars3.githubusercontent.com/u/2842176?v=4&s=120" alt="">
-                        <span class="replyNum">12</span>/
-                        <span class="viewNum">100</span>
-                        <span class="category topCat">置顶</span>
-                        <span class="title">Promise.all()  如果有一个错误，不走 catch ？</span>
-                        <img class="lastReply" src="https://avatars1.githubusercontent.com/u/628250?v=4&s=120" alt="">
-                        <span class="time">2小时前</span>
-                    </div>
-                </div>
-                <!-- <Page></Page> -->
+                <topic v-for="topic in topicList" :key="topic.id" :topic="topic"></topic>
+                <Page :total="6000" :page-size="30" :current="page" @on-change="goPage"></Page>
             </div>
+   
             <div class="content-right">
               <div class="noLogin">
                 <p>CNode: Node.js专业中文社区</p>
@@ -52,8 +32,7 @@
 
 <script>
 import tabList from "../assets/js/tabList.js"; //tab列表
-import { dateFormat } from "../assets/js/dateFormat.js";
-
+import topic from "./topic.vue";
 import { Page } from "iview";
 
 export default {
@@ -69,8 +48,6 @@ export default {
   methods: {
     //获取topic列表
     getTopicList(tab, page) {
-      // var tab = this.$route.query.tab || this.tab;
-      this.$router.push({ path: "/home", query: { tab } });
       this.http
         .getList({
           tab: tab,
@@ -78,38 +55,40 @@ export default {
           limit: this.limit
         })
         .then(res => {
-          console.log(res);
+          this.topicList = res.data.data;
+          console.log(res.data.data);
         });
     },
-    //更改路由状态并请求数据
+    goPage(page) {
+      this.page = page;
+      var 
+      this.$route.query.push
+      this.getTopicList(this.tab,page);
+    },
+
+    //请求数据
     renderTopic(tab) {
       if (this.tab === tab) {
         return;
       }
+      this.$router.push({ path: "/home", query: { tab } }); //更改路由状态
       this.tab = tab;
       this.getTopicList(this.tab, this.page);
     }
   },
-  watch: {
-    //监听tab的变化来请求数据
-    tab: function(tab) {
-      this;
-    }
-  },
   created() {
+    //初始化页面时根据路由状态请求数据
     if (!this.$route.query.tab) {
-      this.getTopicList('all', 1);
+      this.getTopicList("all", 1);
     } else {
-      this.tab = '';
+      this.tab = "";
       this.renderTopic(this.$route.query.tab);
     }
   },
 
   components: {
-    // Page,
-  },
-  filters: {
-    dateFormat
+    topic,
+    Page
   }
 };
 </script>
@@ -117,7 +96,7 @@ export default {
 <style lang="less" scoped>
 .home {
   background-color: #e1e1e1;
-  padding: 20px 0;
+  padding: 20px 5px;
   .content {
     max-width: 1200px;
     margin: 0 auto;
@@ -141,70 +120,6 @@ export default {
           background-color: #80bd01;
           border-radius: 3px;
           padding: 5px 6px;
-        }
-      }
-    }
-    .topic {
-      height: 50px;
-      background-color: #fff;
-      border-top: 1px solid #f0f0f0;
-      padding: 10px 0;
-      &:hover {
-        background-color: #f5f5f5;
-      }
-      .topicInfo {
-        line-height: 30px;
-        img {
-          &:nth-of-type(1) {
-            width: 30px;
-            height: 30px;
-            border-radius: 3px;
-            margin-left: 10px;
-            cursor: pointer;
-          }
-          &:nth-of-type(2) {
-            width: 18px;
-            height: 18px;
-            border-radius: 3px;
-            float: right;
-            margin-top: 6px;
-          }
-        }
-        span,
-        a {
-          margin-left: 10px;
-        }
-        .replyNum {
-          color: #9e78c0;
-          font-size: 14px;
-        }
-        .viewNum {
-          margin-left: -2px;
-          font-size: 10px;
-        }
-        .category {
-          background-color: #e5e5e5;
-          color: #999;
-          padding: 2px 3px;
-          border-radius: 3px;
-          &.topCat {
-            background-color: #80bd01;
-            color: #fff;
-          }
-        }
-        .title {
-          color: #333;
-          font-size: 14px;
-          font-weight: 30px;
-          &:hover {
-            text-decoration-line: underline;
-          }
-        }
-        .time {
-          float: right;
-          margin-right: 10px;
-          font-size: 11px;
-          color: #778087;
         }
       }
     }

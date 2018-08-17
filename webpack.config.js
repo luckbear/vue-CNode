@@ -28,7 +28,7 @@ module.exports = {
             },
             { test: /\.(png|jpg|gif)$/, use: 'url-loader?limit=227' },
             { test: /\.(ttf|woff|svg|woff2|eot)$/, use: 'url-loader' },
-            // { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ },
+            { test: /\.js$/, use: 'babel-loader', exclude: /node_modules/ },
             {
                 test: /\.vue$/,
                 use: 'vue-loader'
