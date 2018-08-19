@@ -61,34 +61,45 @@ export default {
     },
     goPage(page) {
       this.page = page;
-      var 
-      this.$route.query.push
-      this.getTopicList(this.tab,page);
+      var tab = this.$route.query.tab;
+      this.$router.push({ path: "/home", query: { tab, page } });
+      this.getTopicList(this.tab, page);
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
     },
 
-    //请求数据
-    renderTopic(tab) {
+    //点击tab请求数据
+    renderTopic(tab, page) {
       if (this.tab === tab) {
         return;
       }
-      this.$router.push({ path: "/home", query: { tab } }); //更改路由状态
+      this.$router.push({ path: "/home", query: { tab, page } }); //更改路由状态
       this.tab = tab;
-      this.getTopicList(this.tab, this.page);
+      this.getTopicList(this.tab, page);
     }
   },
   created() {
     //初始化页面时根据路由状态请求数据
     if (!this.$route.query.tab) {
+      this.$router.push({ path: "/home", query: { tab: "all" } });
       this.getTopicList("all", 1);
     } else {
       this.tab = "";
-      this.renderTopic(this.$route.query.tab);
+      this.page = parseInt(this.$route.query.page);
+      this.renderTopic(this.$route.query.tab, this.page);
     }
   },
 
   components: {
     topic,
     Page
+  },
+
+  watch: {
+    //用户点击的tab发生变化则请求第一页的数据
+    "$route.query.tab": function(tab) {
+      this.page = 1;
+    }
   }
 };
 </script>
@@ -96,7 +107,7 @@ export default {
 <style lang="less" scoped>
 .home {
   background-color: #e1e1e1;
-  padding: 20px 5px;
+  padding: 15px 5px;
   .content {
     max-width: 1200px;
     margin: 0 auto;

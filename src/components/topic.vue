@@ -5,7 +5,7 @@
             <span class="replyNum" title="回复数">{{topic.reply_count }}</span>/
             <span class="viewNum" title="浏览数">{{topic.visit_count}}</span>
             <span :class="['tab',{topCat:topic.top||topic.good}]">{{getTabName(topic.top,topic.good,topic.tab)||'未分类'}}</span>
-            <a class="title">{{topic.title.substring(0,35)}}</a>
+            <a class="title" :title="topic.title" @click="goDetail(topic.id)">{{topic.title.substring(0,15)}}</a>
             <span class="time">{{topic.last_reply_at|dateFormat}}</span>
         </div>
     </div>
@@ -19,6 +19,11 @@ export default {
     return {
       tabList: tabList
     };
+  },
+  methods:{
+    goDetail(id){
+      this.$router.push({path:'/detail',query:{id}})
+    }
   },
   props: ["topic"],
   computed: {

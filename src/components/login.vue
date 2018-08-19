@@ -33,7 +33,7 @@
 <style lang="less" scoped>
 .login-container {
   background-color: #e1e1e1;
-  padding: 20px 5px;
+  padding: 15px 5px;
   .content {
     max-width: 1200px;
     margin: 0 auto;
@@ -53,7 +53,7 @@
       }
       .login {
         margin-top: 50px;
-        margin-left: 150px;
+        margin-left: 50px;
         input {
           margin-left: 10px;
           width: 280px;
