@@ -8,11 +8,14 @@
                 </div>
 
                 <div class="login">
-                    <span>Access Token账号:</span> <input type="text">
-                    <div><span>登陆</span><a href="">忘记账号了?</a></div>
+                  <span>Access Token账号:</span> 
+                  <input type="text" v-model="accesstoken">
+                  <span class="errorInfo"><Icon type="ios-close-circle" /></span>
+                  <div><span @click="login">登陆</span><a href="">忘记账号了?</a></div>
                 </div>
             </div>
-            <div class="login-right">
+
+            <div class="content-right">
               <div class="header">
                 <span>关于</span>
               </div>
@@ -27,6 +30,33 @@
 </template>
 
 <script>
+import { Icon } from "iview";
+export default {
+  data() {
+    return {
+      accesstoken: ""
+    };
+  },
+  methods: {
+    login() {
+      if (!this.accesstoken.trim()) {
+        alert("请输入AccessToken账号");
+      }
+      
+      this.http.login(this.accesstoken).then(res => {
+        if (res.success) {
+        } else {
+          alert(res.error_msg);
+          console.log(res.error_msg);
+          
+        }
+      });
+    }
+  },
+  components: {
+    Icon
+  }
+};
 </script>
 
 
@@ -76,7 +106,7 @@
         }
       }
     }
-    .login-right {
+    .content-right {
       width: 290px;
       height: 200px;
       border-radius: 3px;
@@ -90,11 +120,11 @@
         line-height: 40px;
         text-align-last: center;
       }
-      .info{
-          p{
-              margin-top: 10px;
-              margin-left: 10px;
-          }
+      .info {
+        p {
+          margin-top: 10px;
+          margin-left: 10px;
+        }
       }
     }
   }

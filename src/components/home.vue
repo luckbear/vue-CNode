@@ -42,16 +42,21 @@ export default {
       topicList: [],
       page: 1,
       limit: 30,
-      tab: "all" //被点击的tab
+      tab: "all", //初始被点击的tab为all
+      authooInfo: {} //当前登陆用户的信息
     };
   },
   methods: {
     //获取topic列表
-    getTopicList(tab, page) {
+    getTopicList() {
+      //取得当前tab和page
+      this.tab = this.$route.query.tab || this.tab;
+      this.page = this.$route.query.page * 1 || 1;
+
       this.http
         .getList({
-          tab: tab,
-          page: page,
+          tab: this.tab,
+          page: this.page,
           limit: this.limit
         })
         .then(res => {
@@ -59,35 +64,35 @@ export default {
           console.log(res.data.data);
         });
     },
+
+    //获取当前登陆用户信息
+    getUserInfo(name) {
+      this.http.getUserInfo(name).then(res => {
+        this.authooInfo = res.data;
+        //同步到vuex中
+        this.$store.commit('saveUserInfo',res.data)
+      });
+    },
+
+    //点击页码请求数据
     goPage(page) {
       this.page = page;
       var tab = this.$route.query.tab;
       this.$router.push({ path: "/home", query: { tab, page } });
-      this.getTopicList(this.tab, page);
+      this.getTopicList();
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     },
 
-    //点击tab请求数据
-    renderTopic(tab, page) {
-      if (this.tab === tab) {
-        return;
-      }
-      this.$router.push({ path: "/home", query: { tab, page } }); //更改路由状态
-      this.tab = tab;
-      this.getTopicList(this.tab, page);
+    //点击tab更改路由状态
+    renderTopic(tab) {
+      this.$router.push({ path: "/home", query: { tab } });
+      console.log(this.$route.query.page);
     }
   },
   created() {
-    //初始化页面时根据路由状态请求数据
-    if (!this.$route.query.tab) {
-      this.$router.push({ path: "/home", query: { tab: "all" } });
-      this.getTopicList("all", 1);
-    } else {
-      this.tab = "";
-      this.page = parseInt(this.$route.query.page);
-      this.renderTopic(this.$route.query.tab, this.page);
-    }
+    //初始化页面
+    this.getTopicList();
   },
 
   components: {
@@ -96,9 +101,11 @@ export default {
   },
 
   watch: {
-    //用户点击的tab发生变化则请求第一页的数据
-    "$route.query.tab": function(tab) {
-      this.page = 1;
+    //监听路由的变化来请求数据
+    $route: function(tab) {
+      console.log(tab);
+
+      this.getTopicList();
     }
   }
 };

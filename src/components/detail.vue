@@ -4,37 +4,37 @@
             <div class="content-left">
                 <div class="topicDetail">
                     <div class="header">
-                        <span class="tab">置顶</span>
-                        <span class="full_title">【20180811】Node 地下铁第六期「成都站」线下沙龙邀约 - 企业级的 Node.js 实践</span>
+                        <span class="tab" v-show="detail.top||detail.good">{{getTabName(detail.top,detail.good)}}</span>
+                        <span class="full_title">{{detail.title}}</span>
                         <div class="topicInfo">
-                            <span><Icon type="android-time"></Icon>发布于&nbsp;1小时前</span>
-                            <span><Icon type="person"></Icon>作者:&nbsp;<a>wwww</a></span>
-                            <span><Icon type="eye"></Icon>111&nbsp;次浏览</span>
-                            <span><Icon type="edit"></Icon>最后编辑&nbsp;</span>
-                            <span>来自&nbsp;分享</span>
+                            <span><Icon type="android-time"></Icon>发布于&nbsp;{{detail.create_at|dateFormat}}</span>
+                            <span><Icon type="person"></Icon>作者:&nbsp;<a>{{detail.author.loginname}}</a></span>
+                            <span><Icon type="eye"></Icon>{{detail.visit_count}}&nbsp;次浏览</span>
+                            <span><Icon type="edit"></Icon>最后编辑&nbsp;{{detail.last_reply_at|dateFormat  }}</span>
+                            <span>来自&nbsp;{{getTabName('','',detail.tab)}}</span>
                         </div>
                     </div>
-                     <div class="topicBody">
-                        不仅仅只是 MVC。
+                     <div class="topicBody" v-html="detail.content">
+                        
                     </div>   
                 </div>
 
 
                 <div class="reply">
-                    <p class="replyNum">11回复</p>
-                    <div class="replyContent">
+                    <p class="replyNum">{{detail.reply_count}}&nbsp;回复</p>
+                    <div class="replyContent" v-for="(reply,id) in replies" :key=reply.create_at>
                         <div class="authorInfo">
-                        <a href=""><img src="https://avatars2.githubusercontent.com/u/227713?v=4&s=120" alt=""></a>
-                        <a href="">kkkkk</a>
-                        <a href="">1楼.10天前</a>
+                        <a href=""><img :src="reply.author.avatar_url" :title="reply.author.loginname"></a>
+                        <a href="">{{reply.author.loginname}}</a>
+                        <a href="">{{id+1}}楼&nbsp;{{reply.create_at|dateFormat}}</a>
                         <a class="replyBtn" title="回复"><Icon type="reply"></Icon></a>
-                        <span clsss="thumbsupNum">2</span>
-                        <a href="" class="thumbsup" title="点赞"><Icon type="thumbsup"></Icon></a>
+                        <span clsss="thumbsupNum" v-show="reply.ups.length">{{reply.ups.length}}</span>
+                        <a href="" class="thumbsUp" title="点赞"><Icon type="thumbsup"></Icon></a>
                         </div>
 
                         <div class="replyText">
-                        <p>
-                            Node.js 如何在阿里、蚂蚁这样的公司生存下来？首要解决的是和现有基础设施打通的问题，
+                        <p v-html="reply.content">
+                           
                         </p>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
             </div>
    
             <div class="content-right">
-                <authorInfo/>
+                <authorInfo :author="author"/>
             </div>
         </div>
     </div>
@@ -53,26 +53,58 @@
 <script>
 import { Icon } from "iview";
 import authorInfo from "./authorInfo.vue";
+import { dateFormat } from "../assets/js/dateFormat.js";
+import tabList from "../assets/js/tabList.js";
+
 export default {
   data() {
     return {
-      detail: {}
+      detail: {},
+      replies: [],
+      author:{}
     };
   },
   created() {
     this.getDetail(this.$route.query.id);
   },
   methods: {
+    //获取文章详情
     getDetail(id) {
-      this.http.getDetail(id).then(res => {
-        this.detail = res.data;
-        console.log(res);
-      });
+      this.http
+        .getDetail({
+          id: id,
+          md: true
+        })
+        .then(res => {
+          this.detail = res.data.data;
+          this.replies = this.detail.replies;
+          console.log(res.data.data);
+        });
+    },
+    //获取作者信息
+    getAuthor(){
+      
     }
   },
   components: {
     Icon,
     authorInfo
+  },
+  computed: {
+    //得到tab对应的中文名字
+    getTabName() {
+      return function(top, good, tab) {
+        if (top) return "置顶";
+        if (good) return "精华";
+        var tabObj = tabList.filter(el => {
+          return el.url === tab;
+        })[0];
+        if (tabObj) return tabObj.name;
+      };
+    }
+  },
+  filters: {
+    dateFormat
   }
 };
 </script>
@@ -112,7 +144,7 @@ export default {
         }
       }
       .topicBody {
-        padding: 10px;
+        padding: 10px 20px;
       }
     }
 
@@ -129,6 +161,13 @@ export default {
       }
       .replyContent {
         padding: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        &:hover {
+          .thumbsUp {
+            display: block;
+          }
+          background-color: #f0f0f0;
+        }
         .authorInfo {
           a {
             margin-right: 5px;
@@ -140,6 +179,9 @@ export default {
             &:nth-child(4) {
               float: right;
               font-size: 15px;
+              color: #ccc;
+            }
+            &.thumbsUp.uped{
               color: #000;
             }
           }
@@ -147,10 +189,11 @@ export default {
             font-size: 15px;
             float: right;
             padding: 0 4px;
+            color: #ccc;
           }
         }
         .replyText {
-          margin: 10px 0;
+          margin-left: 40px;
           font-size: 14px;
         }
         img {

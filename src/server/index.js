@@ -11,7 +11,7 @@ let response = axios.create({
 // tab String 主题分类。目前有 ask share job good
 // limit Number 每一页的主题数量
 // mdrender String 当为 false 时，不渲染。默认为 true，渲染出现的所有 markdown 格式文本。
-export const getList = params => {   
+export const getList = params => {
     return response({
         methods: 'get',
         url: '/topics',
@@ -31,13 +31,43 @@ export const getList = params => {
 export const getDetail = params => {
     return response({
         methods: 'get',
-        url: '/topic',
+        url: '/topic/' + params.id,
         params: {
-            id:params
+            mdrender: params.md,
+            accesstoken: params.accesstoken,
         }
     });
 };
 
+// get /user/:loginname 用户详情
+// post /accesstoken 验证 accessToken 的正确性
+// 接收 post 参数
+// accesstoken String 用户的 accessToken
+// 如果成功匹配上用户，返回成功信息。否则 403
+export const getUserInfo = params => {
+    return response({
+        method: 'get',
+        url: '/user/' + params,
+        params: {
+
+        }
+    });
+};
+
+// post /accesstoken 验证 accessToken 的正确性
+// 接收 post 参数
+
+// accesstoken String 用户的 accessToken
+// 如果成功匹配上用户，返回成功信息。否则 403。
+export const login = params => {
+    return response({
+        method: 'post',
+        url: '/accesstoken',
+        data: {
+            accesstoken: params
+        }
+    })
+}
 
 
 
@@ -45,12 +75,12 @@ export const getDetail = params => {
 
 
 export default {
-    install(Vue){
-        Vue.prototype.http={
+    install(Vue) {
+        Vue.prototype.http = {
             getList,
-            getDetail
+            getDetail,
+            getUserInfo,
+            login
         }
     }
 }
-
-

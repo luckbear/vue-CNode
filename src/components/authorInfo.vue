@@ -5,9 +5,9 @@
             <span>个人信息</span>
             </div>
             <div class="info">
-                <a href=""><img src="https://avatars2.githubusercontent.com/u/227713?v=4&s=120" alt=""></a>
-                <a href="">www</a>
-                <p>积分:34分</p>
+                <a href=""><img :src="author.avatar_url" :alt="author.loginname" :title="author.loginname"></a>
+                <a href="">{{author.loginname}}</a>
+                <p>积分:{{author.score}}分</p>
                 <span>“ 这家伙很懒，什么个性签名都没有留下。 ”</span>
             </div>
         </div>
@@ -15,7 +15,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props:['author']
+};
 </script>
 
 <style lang="less" scoped>

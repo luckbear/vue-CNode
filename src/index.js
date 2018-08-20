@@ -6,6 +6,9 @@ import Router from 'vue-router'
 Vue.use(Router)
 import router from './router'
 
+//导入vuex
+import store from './store/index.js'
+
 //引入iview
 import 'iview/dist/styles/iview.css'
 
@@ -18,5 +21,6 @@ import App from './App.vue'
 var vm = new Vue({
     el: '#app',
     render: c => c (App),
-    router
+    router,
+    store
 });
