@@ -21,10 +21,12 @@
             </div>
    
             <div class="content-right">
-              <div class="noLogin">
+              <div class="noLogin" v-if="!isLogin">
                 <p>CNode: Node.js专业中文社区</p>
-                <p class="login">通过 Access Token 登陆</p>
+                <p class="login" @click="login">通过 Access Token 登陆</p>
               </div>
+
+              <authorInfo :author="authorInfo" v-if="isLogin"/>
             </div>
         </div>
     </div>
@@ -32,8 +34,10 @@
 
 <script>
 import tabList from "../assets/js/tabList.js"; //tab列表
+import authorInfo from "./authorInfo.vue";
 import topic from "./topic.vue";
 import { Page } from "iview";
+import Cookies from "js-cookie";
 
 export default {
   data() {
@@ -43,10 +47,15 @@ export default {
       page: 1,
       limit: 30,
       tab: "all", //初始被点击的tab为all
-      authooInfo: {} //当前登陆用户的信息
+      authorInfo: {} //当前登陆用户的信息
     };
   },
   methods: {
+    //登陆事件
+    login() {
+      this.$router.push({ path: "/login" });
+    },
+
     //获取topic列表
     getTopicList() {
       //取得当前tab和page
@@ -61,23 +70,21 @@ export default {
         })
         .then(res => {
           this.topicList = res.data.data;
-          console.log(res.data.data);
         });
     },
 
     //获取当前登陆用户信息
     getUserInfo(name) {
       this.http.getUserInfo(name).then(res => {
-        this.authooInfo = res.data;
-        //同步到vuex中
-        this.$store.commit('saveUserInfo',res.data)
+        this.authorInfo = res.data.data;
+        this.$store.commit("saveUserInfo", this.authorInfo);
       });
     },
 
     //点击页码请求数据
     goPage(page) {
       this.page = page;
-      var tab = this.$route.query.tab;
+      var tab = this.$route.query.tab || this.tab;
       this.$router.push({ path: "/home", query: { tab, page } });
       this.getTopicList();
       document.body.scrollTop = 0;
@@ -87,25 +94,39 @@ export default {
     //点击tab更改路由状态
     renderTopic(tab) {
       this.$router.push({ path: "/home", query: { tab } });
-      console.log(this.$route.query.page);
     }
   },
   created() {
+    //判断用户是否登陆
+    var userObj = Cookies.get("user");
+    if (userObj) {
+      userObj = JSON.parse(userObj);
+      this.getUserInfo(userObj.userInfo.loginname);
+
+      this.$store.commit("setLogin", {bool:true,key:userObj.key});
+    }
+
     //初始化页面
     this.getTopicList();
   },
 
   components: {
     topic,
-    Page
+    Page,
+    authorInfo
   },
 
   watch: {
     //监听路由的变化来请求数据
     $route: function(tab) {
-      console.log(tab);
-
       this.getTopicList();
+    }
+  },
+
+  computed: {
+    //标识是否登陆
+    isLogin() {
+      return this.$store.state.userLogin.isLogin;
     }
   }
 };

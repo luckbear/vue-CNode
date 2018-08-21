@@ -31,6 +31,7 @@
 
 <script>
 import { Icon } from "iview";
+import Cookies from "js-cookie";
 export default {
   data() {
     return {
@@ -42,13 +43,13 @@ export default {
       if (!this.accesstoken.trim()) {
         alert("请输入AccessToken账号");
       }
-      
-      this.http.login(this.accesstoken).then(res => {
-        if (res.success) {
+
+      this.http.login(this.accesstoken).then(({ data }) => {
+        if (data.success) {
+          Cookies.set("user", {userInfo:data,key:this.accesstoken});
+          this.$router.push({ path: "/home" });
         } else {
-          alert(res.error_msg);
-          console.log(res.error_msg);
-          
+          console.log("AccessToken账号错误");
         }
       });
     }

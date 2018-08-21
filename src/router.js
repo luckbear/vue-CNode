@@ -17,7 +17,7 @@ export default new Router({
             name: 'home',
             component: home,
             meta: {
-                title: 'document'
+                title: 'CNode：Node.js专业中文社区'
             }
         },
         {

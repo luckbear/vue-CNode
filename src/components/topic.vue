@@ -20,9 +20,10 @@ export default {
       tabList: tabList
     };
   },
-  methods:{
-    goDetail(id){
-      this.$router.push({path:'/detail',query:{id}})
+
+  methods: {
+    goDetail(id) {
+      this.$router.push({ path: "/detail", query: { id } });
     }
   },
   props: ["topic"],
@@ -38,8 +39,12 @@ export default {
         if (tabObj) return tabObj.name;
       };
     },
-    isTag(){
-      if (this.$route.query.tab===('all'||'good')) return true
+    isTag() {
+      if (
+        this.$route.query.tab === ("all" || "good") ||
+        this.$route.fullPath === "/home"
+      )
+        return true;
     }
   },
   filters: {

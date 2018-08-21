@@ -7,7 +7,9 @@
                     <li @click="toHome">首页</li>
                     <li @click="toMessage">未读消息</li>
                     <li>关于</li>
-                    <li @click="toLogin">登陆</li>
+                    <li @click="logOut" v-if="isLogin">注销</li>
+                    <li @click="toLogin" v-if="!isLogin">登陆</li>
+                    
                 </ul>
             </div>
         </header>
@@ -31,6 +33,7 @@
 
 <script>
 import { BackTop } from "iview";
+import Cookies from 'js-cookie'
 export default {
   methods: {
     //首页跳转
@@ -44,10 +47,22 @@ export default {
     //登陆页面跳转
     toLogin() {
       this.$router.push({ path: "/login" });
+    },
+    
+    //注销用户
+    logOut(){
+      Cookies.remove('user');
+      this.$store.commit('setLogin',{bool:false})
+      this.$router.push({path:'/home'})
     }
   },
   components: {
-    BackTop,
+    BackTop
+  },
+  computed: {
+    isLogin() {
+      return this.$store.state.userLogin.isLogin;
+    }
   }
 };
 </script>

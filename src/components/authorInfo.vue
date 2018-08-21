@@ -2,7 +2,7 @@
     <div id="container">
         <div class="authorInfo">
             <div class="header">
-            <span>个人信息</span>
+            <span>{{isAuthor?'作者':'个人信息'}}</span>
             </div>
             <div class="info">
                 <a href=""><img :src="author.avatar_url" :alt="author.loginname" :title="author.loginname"></a>
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  props:['author']
+  props:['author','isAuthor']
 };
 </script>
 

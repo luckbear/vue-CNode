@@ -12,6 +12,8 @@
                             <span><Icon type="eye"></Icon>{{detail.visit_count}}&nbsp;次浏览</span>
                             <span><Icon type="edit"></Icon>最后编辑&nbsp;{{detail.last_reply_at|dateFormat  }}</span>
                             <span>来自&nbsp;{{getTabName('','',detail.tab)}}</span>
+                            <span class="collect" v-if="isLogin&&!isCollect" @click="collectOpreat(http.collect,detail.id)">收藏</span>
+                            <span class="noCollect" v-if="isLogin&&isCollect" @click="collectOpreat(http.noCollect,detail.id)">取消收藏</span>
                         </div>
                     </div>
                      <div class="topicBody" v-html="detail.content">
@@ -24,12 +26,12 @@
                     <p class="replyNum">{{detail.reply_count}}&nbsp;回复</p>
                     <div class="replyContent" v-for="(reply,id) in replies" :key=reply.create_at>
                         <div class="authorInfo">
-                        <a href=""><img :src="reply.author.avatar_url" :title="reply.author.loginname"></a>
-                        <a href="">{{reply.author.loginname}}</a>
-                        <a href="">{{id+1}}楼&nbsp;{{reply.create_at|dateFormat}}</a>
-                        <a class="replyBtn" title="回复"><Icon type="reply"></Icon></a>
-                        <span clsss="thumbsupNum" v-show="reply.ups.length">{{reply.ups.length}}</span>
-                        <a href="" class="thumbsUp" title="点赞"><Icon type="thumbsup"></Icon></a>
+                          <a href=""><img :src="reply.author.avatar_url" :title="reply.author.loginname"></a>
+                          <a href="">{{reply.author.loginname}}</a>
+                          <a href="">{{id+1}}楼&nbsp;{{reply.create_at|dateFormat}}</a>
+                          <a class="replyBtn" title="回复"><Icon type="reply"></Icon></a>
+                          <span clsss="thumbsupNum" v-show="reply.ups.length">{{reply.ups.length}}</span>
+                          <a href="" class="thumbsUp" title="点赞" ><Icon type="thumbsup"></Icon></a>
                         </div>
 
                         <div class="replyText">
@@ -44,7 +46,7 @@
             </div>
    
             <div class="content-right">
-                <authorInfo :author="author"/>
+                <authorInfo :author="author" :isAuthor="true"/>
             </div>
         </div>
     </div>
@@ -55,16 +57,25 @@ import { Icon } from "iview";
 import authorInfo from "./authorInfo.vue";
 import { dateFormat } from "../assets/js/dateFormat.js";
 import tabList from "../assets/js/tabList.js";
+import Cookies from "js-cookie";
 
 export default {
   data() {
     return {
-      detail: {},
-      replies: [],
-      author:{}
+      detail: {}, //帖子详情
+      replies: [], //回复列表
+      author: {}, //作者信息
+      isCollect: false //是否收藏
     };
   },
   created() {
+    //判断用户是否登陆
+    var userObj = Cookies.get("user");
+    if (userObj) {
+      userObj = JSON.parse(userObj);
+      this.$store.commit("setLogin", { bool: true, key: userObj.key });
+    }
+
     this.getDetail(this.$route.query.id);
   },
   methods: {
@@ -73,17 +84,34 @@ export default {
       this.http
         .getDetail({
           id: id,
-          md: true
+          md: true,
+          accesstoken: this.$store.state.userLogin.accesskey || ""
         })
         .then(res => {
           this.detail = res.data.data;
           this.replies = this.detail.replies;
-          console.log(res.data.data);
+          this.isCollect = this.detail.is_collect;
+
+          this.getAuthorInfo();
         });
     },
     //获取作者信息
-    getAuthor(){
-      
+    getAuthorInfo() {
+      this.http.getUserInfo(this.detail.author.loginname).then(res => {
+        this.author = res.data.data;
+      });
+    },
+
+    //收藏或取消收藏操作
+    collectOpreat(meth, id) {
+      meth({
+        key: this.$store.state.userLogin.accesskey,
+        id
+      }).then(res => {
+        if (res.data.success) {
+          this.isCollect = !this.isCollect;
+        }
+      });
     }
   },
   components: {
@@ -101,6 +129,10 @@ export default {
         })[0];
         if (tabObj) return tabObj.name;
       };
+    },
+    //标识登陆状态
+    isLogin() {
+      return this.$store.state.userLogin.isLogin;
     }
   },
   filters: {
@@ -137,14 +169,44 @@ export default {
           font-weight: bold;
         }
         .topicInfo {
-          padding: 10px 0;
+          padding: 15px 0;
           span {
             margin-left: 8px;
+            &.collect {
+              float: right;
+              background-color: #80bd01;
+              color: #fff;
+              padding: 4px 6px;
+              border-radius: 3px;
+              cursor: pointer;
+              &:hover {
+                background-color: #6ba44e;
+              }
+            }
+            &.noCollect {
+              float: right;
+              background-color: #e5e5e5;
+              color: #000;
+              padding: 4px 6px;
+              border-radius: 3px;
+              cursor: pointer;
+              &:hover {
+                background-color: #909090;
+                color: #fff;
+              }
+            }
           }
         }
       }
       .topicBody {
-        padding: 10px 20px;
+        padding: 20px;
+        line-height: 32px;
+        font-size: 15px;
+        overflow: auto;
+        img {
+          width: 100%;
+          max-width: 800px;
+        }
       }
     }
 
@@ -181,7 +243,7 @@ export default {
               font-size: 15px;
               color: #ccc;
             }
-            &.thumbsUp.uped{
+            &.thumbsUp.uped {
               color: #000;
             }
           }
@@ -195,6 +257,9 @@ export default {
         .replyText {
           margin-left: 40px;
           font-size: 14px;
+          img {
+            max-width: 800px;
+          }
         }
         img {
           width: 30px;

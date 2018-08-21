@@ -31,7 +31,7 @@ export const getList = params => {
 export const getDetail = params => {
     return response({
         methods: 'get',
-        url: '/topic/' + params.id,
+        url: `/topic/${params.id}`,
         params: {
             mdrender: params.md,
             accesstoken: params.accesstoken,
@@ -69,6 +69,36 @@ export const login = params => {
     })
 }
 
+// post /topic_collect/collect 收藏主题
+// 接收 post 参数
+// accesstoken String 用户的 accessToken
+// topic_id String 主题的id
+export const collect = params => {
+    return response({
+        method: 'post',
+        url: '/topic_collect/collect',
+        data: {
+            accesstoken: params.key,
+            topic_id: params.id
+        }
+    })
+};
+
+// post /topic_collect/de_collect 取消主题
+// 接收 post 参数
+// accesstoken String 用户的 accessToken
+// topic_id String 主题的id
+export const noCollect = params => {
+    return response({
+        method: 'post',
+        url: '/topic_collect/de_collect',
+        data: {
+            accesstoken: params.key,
+            topic_id: params.id
+        }
+    })
+};
+
 
 
 
@@ -80,7 +110,9 @@ export default {
             getList,
             getDetail,
             getUserInfo,
-            login
+            login,
+            collect,
+            noCollect
         }
     }
 }
