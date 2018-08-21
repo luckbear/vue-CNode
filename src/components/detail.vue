@@ -31,13 +31,13 @@
                           <a href="">{{id+1}}楼&nbsp;{{reply.create_at|dateFormat}}</a>
                           <a class="replyBtn" title="回复"><Icon type="reply"></Icon></a>
                           <span clsss="thumbsupNum" v-show="reply.ups.length">{{reply.ups.length}}</span>
-                          <a href="" class="thumbsUp" title="点赞" ><Icon type="thumbsup"></Icon></a>
+                          <a href="" :class="['thumbsUp',{uped:isUp}]" title="点赞" @click.prevent="thumbsUp(reply)"><Icon type="thumbsup"></Icon></a>
                         </div>
 
                         <div class="replyText">
-                        <p v-html="reply.content">
-                           
-                        </p>
+                            <p v-html="reply.content">
+                            
+                            </p>
                         </div>
                     </div>
 
@@ -65,7 +65,8 @@ export default {
       detail: {}, //帖子详情
       replies: [], //回复列表
       author: {}, //作者信息
-      isCollect: false //是否收藏
+      isCollect: false, //是否收藏
+      isUp: false //是否点赞
     };
   },
   created() {
@@ -112,6 +113,26 @@ export default {
           this.isCollect = !this.isCollect;
         }
       });
+    },
+
+    //给评论点赞
+    thumbsUp(reply) {
+      this.http
+        .thumbsUp({
+          id: reply.id,
+          key: this.$store.state.userLogin.accesskey
+        })
+        .then(res => {
+          if (res.data.success) {
+            if (res.data.action === "up") {
+              this.isUp = true;
+              reply.ups.push("");
+            } else {
+              this.isUp = false;
+              reply.ups.splice(0, 1);
+            }
+          }
+        });
     }
   },
   components: {
@@ -259,6 +280,7 @@ export default {
           font-size: 14px;
           img {
             max-width: 800px;
+            width: 100%;
           }
         }
         img {

@@ -100,6 +100,24 @@ export const noCollect = params => {
 };
 
 
+// post / reply /: reply_id / ups 为评论点赞
+// 接受 post 参数
+// accesstoken String
+// 接口会自动判断用户是否已点赞，如果否，则点赞；如果是，则取消点赞。点赞的动作反应在返回数据的 action 字段中，up or down。
+// 返回值示例
+// { "success": true, "action": "down" }
+export const thumbsUp = params => {
+    return response({
+        method: 'post',
+        url: '/reply/' + params.id + '/ups',
+        data: {
+            accesstoken: params.key,
+        }
+    })
+};
+
+
+
 
 
 
@@ -112,7 +130,8 @@ export default {
             getUserInfo,
             login,
             collect,
-            noCollect
+            noCollect,
+            thumbsUp
         }
     }
 }
