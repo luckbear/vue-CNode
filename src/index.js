@@ -16,6 +16,11 @@ import 'iview/dist/styles/iview.css'
 import http from './server'
 Vue.use(http)
 
+//引入mavon-editor
+// import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+// Vue.use(mavonEditor)
+
 import App from './App.vue'
 
 var vm = new Vue({

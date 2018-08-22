@@ -116,6 +116,24 @@ export const thumbsUp = params => {
     })
 };
 
+// post /topic/:topic_id/replies 新建评论
+// 接收 post 参数
+// accesstoken String 用户的 accessToken
+// content String 评论的主体
+// reply_id String 如果这个评论是对另一个评论的回复，请务必带上此字段。这样前端就可以构建出评论线索图。
+export const reply = params => {
+    return response({
+        method: 'post',
+        url: '/topic/' + params.id + '/replies',
+        data: {
+            id:params.id,
+            accesstoken: params.key,
+            content:params.content,
+            reply_id:params.repId
+
+        }
+    })
+};
 
 
 
@@ -131,7 +149,8 @@ export default {
             login,
             collect,
             noCollect,
-            thumbsUp
+            thumbsUp,
+            reply
         }
     }
 }
