@@ -42,14 +42,14 @@
                         <div class="repOther" v-if="showId===reply.id">
                             <!-- 编辑框 -->
                             <mavonEditor v-model="replyContent" :toolbars="toolbars" :subfield=false :boxShadow=false></mavonEditor>
-                            <p><span class="btnRepOther" @click="replrConfirm(replyContent,reply)">回复</span></p>
+                            <p><span class="btnRepOther" @click="submitRep(replyContent,reply)">回复</span></p>
                         </div>
 
                     </div>
 
                     <div class="addReply" v-if="isLogin">
                         <div class="header">
-                            <span>添加回复</span>  <span @click="replrConfirm(commentText,{id:''})">回复</span>
+                            <span>添加回复</span>  <span @click="submitRep(commentText,{id:''})">回复</span>
                         </div>
                         <!-- 编辑框 -->
                         <mavonEditor v-model="commentText" :toolbars="toolbars" :subfield=false :boxShadow=false></mavonEditor>
@@ -198,10 +198,6 @@ export default {
       this.replyContent = "@" + reply.author.loginname + " ";
     },
 
-    //楼层内确认回复别人
-    replrConfirm(content, reply) {
-      this.submitRep(content, reply);
-    }
   },
 
   components: {

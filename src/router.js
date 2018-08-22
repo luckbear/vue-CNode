@@ -9,34 +9,35 @@ import user from './components/user.vue'
 
 export default new Router({
     routes: [{
-            path: '/',
-            redirect: '/home',
-        },
-        {
-            path: '/home',
-            name: 'home',
-            component: home,
-            meta: {
-                title: 'CNode：Node.js专业中文社区'
-            }
-        },
-        {
-            path: '/detail',
-            component: detail
-        },
-        {
-            path: '/message',
-            name: 'message',
-            component: message
-        },
-        {
-            path: '/login',
-            name: 'login',
-            component: login
-        },
-        {
-            path: '/user',
-            component: user
+        path: '/',
+        redirect: '/home',
+    },
+    {
+        path: '/home',
+        name: 'home',
+        component: home,
+        meta: {
+            login: false,
+            title: 'CNode：Node.js专业中文社区'
         }
+    },
+    {
+        path: '/detail',
+        component: detail
+    },
+    {
+        path: '/message',
+        name: 'message',
+        component: message
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: login
+    },
+    {
+        path: '/user',
+        component: user
+    }
     ]
 })
