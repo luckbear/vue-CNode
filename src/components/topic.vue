@@ -1,11 +1,11 @@
 <template>
     <div class="topic">
         <div class="topicInfo" >
-            <img :src="topic.author.avatar_url" alt="">
+            <img :src="topic.author.avatar_url" @click="clickUser(topic.author.loginname)">
             <span class="replyNum" title="回复数">{{topic.reply_count }}</span>/
             <span class="viewNum" title="浏览数">{{topic.visit_count}}</span>
             <span :class="['tab',{topCat:topic.top||topic.good}]" v-if="isTag||topic.top||topic.good">{{getTabName(topic.top,topic.good,topic.tab)||'未分类'}}</span>
-            <a class="title" :title="topic.title" @click="goDetail(topic.id)">{{topic.title.substring(0,15)}}</a>
+            <a class="title" :title="topic.title" @click="goDetail(topic.id)">{{topic.title.substring(0,45)}}</a>
             <span class="time">{{topic.last_reply_at|dateFormat}}</span>
         </div>
     </div>
@@ -24,6 +24,11 @@ export default {
   methods: {
     goDetail(id) {
       this.$router.push({ path: "/detail", query: { id } });
+    },
+
+    //进入作者详情页
+    clickUser(name){
+      this.$router.push({path:'/user/'+name})
     }
   },
   props: ["topic"],

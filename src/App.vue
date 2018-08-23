@@ -98,7 +98,7 @@ export default {
     max-width: 1200px;
     margin: 0 auto;
     p {
-      margin: 20px 0;
+      margin: 20px 10px;
       a {
         color: #08c;
       }

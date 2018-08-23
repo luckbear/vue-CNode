@@ -26,7 +26,7 @@
                     <p class="replyNum">{{detail.reply_count}}&nbsp;回复</p>
                     <div class="replyContent" v-for="(reply,id) in replies" :key=reply.create_at>
                         <div class="authorInfo">
-                          <a href=""><img :src="reply.author.avatar_url" :title="reply.author.loginname"></a>
+                          <a href="" @click.prevent="clickUser(reply.author.loginname)"><img :src="reply.author.avatar_url" :title="reply.author.loginname"></a>
                           <a href="">{{reply.author.loginname}}</a>
                           <a href="">{{id+1}}楼&nbsp;{{reply.create_at|dateFormat}}</a>
                           <a href="" class="replyBtn" v-if="isLogin" title="回复" @click.prevent="replyWho(reply)"><Icon type="reply"></Icon></a>
@@ -122,6 +122,7 @@ export default {
           accesstoken: this.$store.state.userLogin.accesskey || ""
         })
         .then(res => {
+          document.title = res.data.data.title;
           this.detail = res.data.data;
           this.replies = this.detail.replies;
           this.getAuthorInfo();
@@ -198,6 +199,10 @@ export default {
       this.replyContent = "@" + reply.author.loginname + " ";
     },
 
+    //进入作者详情页
+    clickUser(name) {
+      this.$router.push({ path: "/user/" + name });
+    }
   },
 
   components: {

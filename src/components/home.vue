@@ -26,7 +26,13 @@
                 <p class="login" @click="login">通过 Access Token 登陆</p>
               </div>
 
-              <authorInfo :author="authorInfo" v-if="isLogin"/>
+              <div>
+                <authorInfo :author="authorInfo" v-if="isLogin"/>
+              </div>
+
+              <div class="creatTopic" v-if="isLogin">
+                <span class="creat" @click="create">发布话题</span>
+              </div>
             </div>
         </div>
     </div>
@@ -94,6 +100,11 @@ export default {
     //点击tab更改路由状态
     renderTopic(tab) {
       this.$router.push({ path: "/home", query: { tab } });
+    },
+
+    //发布新话题
+    create(){
+      this.$router.push({path:'/create'})
     }
   },
   created() {
@@ -103,7 +114,7 @@ export default {
       userObj = JSON.parse(userObj);
       this.getUserInfo(userObj.userInfo.loginname);
 
-      this.$store.commit("setLogin", {bool:true,key:userObj.key});
+      this.$store.commit("setLogin", { bool: true, key: userObj.key });
     }
 
     //初始化页面
@@ -128,6 +139,13 @@ export default {
     isLogin() {
       return this.$store.state.userLogin.isLogin;
     }
+  },
+
+  //路由守卫
+  beforeRouteEnter(to, from, next) {
+    next(app => {
+      document.title = app.$route.meta.title;
+    });
   }
 };
 </script>
@@ -165,18 +183,15 @@ export default {
   }
   .content-right {
     width: 290px;
-    height: 100px;
-    border-radius: 3px;
-    background-color: #fff;
     position: absolute;
     top: 0;
     right: 0;
     .noLogin {
-      padding: 0 20px;
-      p {
-        margin-top: 15px;
-      }
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 3px;
       .login {
+        margin-top: 10px;
         text-align-last: center;
         line-height: 40px;
         color: #fff;
@@ -184,6 +199,22 @@ export default {
         height: 40px;
         border-radius: 5px;
         background-color: #5bc0de;
+        cursor: pointer;
+      }
+    }
+    .creatTopic {
+      margin-top: 190px;
+      background-color: #fff;
+      height: 50px;
+      border-radius: 3px;
+      line-height: 50px;
+      padding-left: 10px;
+      .creat{
+        background-color: #80bd01;
+        color: #fff;
+        border-radius: 5px;
+        font-size: 16px;
+        padding: 8px 25px;
         cursor: pointer;
       }
     }

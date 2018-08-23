@@ -5,8 +5,8 @@
             <span>{{isAuthor?'作者':'个人信息'}}</span>
             </div>
             <div class="info">
-                <a href=""><img :src="author.avatar_url" :alt="author.loginname" :title="author.loginname"></a>
-                <a href="">{{author.loginname}}</a>
+                <a href="" @click.prevent="clickUser(author.loginname)"><img :src="author.avatar_url" :alt="author.loginname" :title="author.loginname"></a>
+                <a href="" @click.prevent="clickUser(author.loginname)">{{author.loginname}}</a>
                 <p>积分:{{author.score}}分</p>
                 <span>“ 这家伙很懒，什么个性签名都没有留下。 ”</span>
             </div>
@@ -16,7 +16,13 @@
 
 <script>
 export default {
-  props:['author','isAuthor']
+  props: ["author", "isAuthor"],
+  methods: {
+    //进入作者详情页
+    clickUser(name) {
+      this.$router.push({ path: "/user/" + name });
+    }
+  }
 };
 </script>
 
