@@ -130,7 +130,26 @@ export const reply = params => {
             accesstoken: params.key,
             content:params.content,
             reply_id:params.repId
+        }
+    })
+};
 
+// post / topics 新建主题
+// 接收 post 参数
+
+// accesstoken String 用户的 accessToken
+// title String 标题
+// tab String 目前有 ask share job dev。开发新客户端的同学，请务必将你们的测试帖发在 dev 专区，以免污染日常的版面，否则会进行封号一周处理。
+// content String 主体内容
+export const creatReply = params => {
+    return response({
+        method: 'post',
+        url: '/topics',
+        data: {
+            accesstoken: params.key,
+            tab:params.tab,
+            title:params.title,
+            content: params.content,
         }
     })
 };
@@ -150,7 +169,8 @@ export default {
             collect,
             noCollect,
             thumbsUp,
-            reply
+            reply,
+            creatReply
         }
     }
 }

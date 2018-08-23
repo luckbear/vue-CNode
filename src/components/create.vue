@@ -9,23 +9,19 @@
                 <div class="edit">
                   <div class="head">
                     <span>选择版块:</span>
-                    <Select style="width:200px" v-model="topic">
-                      <Option v-for="tab in tabLi" :key=tab.id :value="tab.url">{{tab.name}}</Option>
+                    <Select style="width:200px;margin-bottom:10px" v-model="topic">
+                      <Option v-for="tab in tabLi" :key="tab.id" :value="tab.url">{{tab.name}}</Option>
                     </Select>
+                    <Input placeholder="请输入标题" v-model="title"/>
                   </div>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
-                  <br>
+                  <div class="topicContent">
+                    <mavonEditor style="z-index:1"/>
+                    <div class="reply">
+                      <span class="btnReply" @click="reply()">回复</span>
+                    </div>
+                    
+                  </div>
+
                 </div>
 
             </div>
@@ -59,7 +55,8 @@
 </template>
 
 <script>
-import { Select } from "iview";
+import { Select, Option, Input } from "iview";
+import { mavonEditor } from "mavon-editor";
 
 export default {
   data() {
@@ -86,12 +83,40 @@ export default {
           url: "dev"
         }
       ],
-      topic: ""
+      topic: "",
+      title: "",
+      topicContent: ""
     };
   },
-  methods: {},
+  methods: {
+    reply() {
+      if (!this.topic) {
+        alert("请选择分类");
+        return;
+      }
+
+      if(!this.title.trim()){
+        alert('请输入标题')
+        return
+      }
+
+      this.http.creatReply({
+        key:this.$store.state.userLogin.accesskey,
+        tab:this.topic,
+        title:this.title,
+        content:this.topicContent
+      }).then(res=>{
+        console.log(res);
+        
+      })
+
+    }
+  },
   components: {
-    Select
+    Select,
+    Option,
+    Input,
+    mavonEditor
   }
 };
 </script>
@@ -122,6 +147,28 @@ export default {
     }
     .edit {
       background-color: #fff;
+      padding: 10px;
+      .topicContent {
+        margin: 10px 0;
+        .reply {
+          margin-top: 10px;
+          .btnReply {
+            background-color: #0088cc;
+            padding: 6px 8px;
+            border-radius: 3px;
+            color: #fff;
+            margin-top: 10px;
+            cursor: pointer;
+          }
+        }
+        .btnReply {
+          background-color: #0088cc;
+          padding: 6px 8px;
+          border-radius: 3px;
+          color: #fff;
+          margin-top: 10px;
+        }
+      }
     }
   }
   .content-right {
