@@ -15,7 +15,7 @@
                     <Input placeholder="请输入标题" v-model="title"/>
                   </div>
                   <div class="topicContent">
-                    <mavonEditor style="z-index:1"/>
+                    <mavonEditor v-model="topicContent" style="z-index:1"/>
                     <div class="reply">
                       <span class="btnReply" @click="reply()">回复</span>
                     </div>
