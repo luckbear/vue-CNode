@@ -6,18 +6,12 @@ const vue_loader = require('vue-loader/lib/plugin')
 
 module.exports = {
     // entry:,
-    //output:{},
     output:{
         filename:'[name].bundle.js',
         chunkFilename:'[chunkhash].bundle.js',
         path: path.resolve(__dirname,'dist')
     },
-    devServer: {
-        port: 8090,
-        hot: true,
-        open: true,
-        contentBase: './',
-    },
+
     module: {
         rules: [
             {
