@@ -95,21 +95,28 @@ export default {
         return;
       }
 
-      if(!this.title.trim()){
-        alert('请输入标题')
-        return
+      if (!this.title.trim()) {
+        alert("请输入标题");
+        return;
       }
 
-      this.http.creatReply({
-        key:this.$store.state.userLogin.accesskey,
-        tab:this.topic,
-        title:this.title,
-        content:this.topicContent
-      }).then(res=>{
-        console.log(res);
-        
-      })
+      if (!this.topicContent.trim()) {
+        alert("内容不能为空");
+        return;
+      }
 
+      this.http
+        .creatReply({
+          key: this.$store.state.userLogin.accesskey,
+          tab: this.topic,
+          title: this.title,
+          content: this.topicContent
+        })
+        .then(res => {
+          if (res.data.success) {
+            this.$router.push({ path: "/home", query: { tab: this.topic } });
+          }
+        });
     }
   },
   components: {

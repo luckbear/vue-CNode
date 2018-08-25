@@ -13,7 +13,10 @@ module.exports = merge(base, {
         open: true,
         contentBase: './',
     },
-    plugins:{
-        
-    }
+    plugins: [
+        new htmlPlugin({
+            template: './index.html'
+        }),
+        new webpack.HotModuleReplacementPlugin()
+    ]
 })
