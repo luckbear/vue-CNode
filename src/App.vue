@@ -33,7 +33,7 @@
 
 <script>
 import { BackTop } from "iview";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 export default {
   methods: {
     //首页跳转
@@ -48,12 +48,12 @@ export default {
     toLogin() {
       this.$router.push({ path: "/login" });
     },
-    
+
     //注销用户
-    logOut(){
-      Cookies.remove('user');
-      this.$store.commit('setLogin',{bool:false})
-      this.$router.push({path:'/home'})
+    logOut() {
+      Cookies.remove("user");
+      this.$store.commit("setLogin", { bool: false });
+      this.$router.push({ path: "/home" });
     }
   },
   components: {
@@ -89,6 +89,9 @@ export default {
         color: #ccc;
         margin: 0 15px;
         cursor: pointer;
+        &:hover {
+          color: #fff;
+        }
       }
     }
   }

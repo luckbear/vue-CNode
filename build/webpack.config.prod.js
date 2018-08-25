@@ -4,9 +4,12 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const htmlPlugin = require('html-webpack-plugin')
 const cleanPlugin = require('clean-webpack-plugin')
 const OptimizeCssAssetsplugin = require('optimize-css-assets-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const cssnano = require('cssnano')
+const autoprefixer = require('autoprefixer')
+const postcssFlexbugsFixes = require('postcss-flexbugs-fixes')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const os = require('os')
+
 const webpack = require('webpack')
 
 
@@ -22,6 +25,36 @@ module.exports = merge(base, {
         chunkFilename: 'js/[name].[chunkhash].js',
         path: path.resolve(__dirname, '../dist'),
     },
+    module: {
+        rules: [{
+            test: /\.(css|less)$/,
+            use: [{
+                    loader: MiniCssExtractPlugin.loader, // 这个 loader 放在最后一个执行，将编译好的 css 独立
+                },
+                require.resolve('css-loader'),
+                {
+                    loader: require.resolve('postcss-loader'),
+                    options: {
+                        ident: 'postcss',
+                        plugins: () => [
+                            postcssFlexbugsFixes,
+                            autoprefixer({
+                                browsers: [
+                                    '>1%',
+                                    'last 4 versions',
+                                    'Firefox ESR',
+                                    'not ie < 9',
+                                ],
+                                flexbox: 'no-2009',
+                            }),
+                        ],
+                    },
+                },
+                require.resolve('less-loader'),
+            ],
+        }, ],
+    },
+
     plugins: [
         new htmlPlugin({
             filename: 'index.html',
@@ -36,7 +69,7 @@ module.exports = merge(base, {
 
         //独立css文件
         new MiniCssExtractPlugin({
-            filename:'css/[name].[contenthash:8].css'
+            filename: 'css/[name].[contenthash:8].css'
         })
 
     ],

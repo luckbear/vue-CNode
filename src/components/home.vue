@@ -178,6 +178,9 @@ export default {
           border-radius: 3px;
           padding: 5px 6px;
         }
+        &:hover{
+          color: #005580;
+        }
       }
     }
   }
